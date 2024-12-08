@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTodoStore } from '../store/todoStore';
 import TodoItem from './TodoItem';
 import { Todo } from '@/types/Todo.types';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 
 
 const TodoList = () => {
@@ -32,13 +32,14 @@ const TodoList = () => {
     }, {});
   }, [filteredTodos]);
 
-  const onDragEnd = (result: any) => {
+  const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
-    const { source, destination } = result;
+    const { destination } = result;
+
     const movedTodo = todos.find(todo => todo.id === result.draggableId);
 
     if (movedTodo) {
-      const newStatus = destination.droppableId.toLowerCase();
+      const newStatus = destination.droppableId.toLowerCase() as "pending" | "in-progress" | "done";
       useTodoStore.getState().updateTodo(movedTodo.id, { status: newStatus });
     }
   };
