@@ -2,37 +2,38 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { v4 as uuidv4 } from 'uuid';
+import { Todo, TodoState } from '@/types/Todo.types';
 
-export interface Todo {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  time: string;
-  status: 'pending' | 'in-progress' | 'done';
-}
+// export interface Todo {
+//   id: string;
+//   title: string;
+//   description: string;
+//   date: string;
+//   time: string;
+//   status: 'pending' | 'in-progress' | 'done';
+// }
 
-interface TodoState {
-  todos: Todo[];
-  addTodo: (
-    title: string,
-    description: string,
-    date: string,
-    time: string
-  ) => void;
-  updateTodo: (
-    id: string,
-    updates:TodoUpdates
-  ) => void;
-  deleteTodo: (id: string) => void;
-}
-interface TodoUpdates {
-  title?: string;
-  description?: string;
-  date?: string;
-  time?: string;
-  status?: 'pending' | 'in-progress' | 'done';
-}
+// interface TodoState {
+//   todos: Todo[];
+//   addTodo: (
+//     title: string,
+//     description: string,
+//     date: string,
+//     time: string
+//   ) => void;
+//   updateTodo: (
+//     id: string,
+//     updates:TodoUpdates
+//   ) => void;
+//   deleteTodo: (id: string) => void;
+// }
+// interface TodoUpdates {
+//   title?: string;
+//   description?: string;
+//   date?: string;
+//   time?: string;
+//   status?: 'pending' | 'in-progress' | 'done';
+// }
 
 export const useTodoStore = create<TodoState>()(
   persist(

@@ -2,48 +2,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTodoStore } from '../store/todoStore';
 import TodoItem from './TodoItem';
-import { Todo } from '../store/todoStore';
+import { Todo } from '@/types/Todo.types';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-const TodoGroup = ({
-  title,
-  todos,
-  droppableId,
-}: {
-  title: string;
-  todos: Todo[];
-  droppableId: string;
-}) => (
-  <Droppable droppableId={droppableId}>
-    {(provided) => (
-      <div
-        className="w-1/3 px-2"
-        ref={provided.innerRef}
-        {...provided.droppableProps}
-      >
-        <h3 className="text-lg font-semibold mb-2">{title}</h3>
-        {todos.length > 0 ? (
-          todos.map((todo, index) => (
-            <Draggable key={todo.id} draggableId={todo.id} index={index}>
-              {(provided) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.draggableProps}
-                  {...provided.dragHandleProps}
-                >
-                  <TodoItem {...todo} />
-                </div>
-              )}
-            </Draggable>
-          ))
-        ) : (
-          <p className="text-gray-500 italic">No tasks in {title}</p>
-        )}
-        {provided.placeholder}
-      </div>
-    )}
-  </Droppable>
-);
 
 const TodoList = () => {
   const [selectedDate, setSelectedDate] = useState<string>('');
@@ -73,7 +34,6 @@ const TodoList = () => {
 
   const onDragEnd = (result: any) => {
     if (!result.destination) return;
-
     const { source, destination } = result;
     const movedTodo = todos.find(todo => todo.id === result.draggableId);
 
@@ -101,7 +61,7 @@ const TodoList = () => {
           )}
           {Object.keys(groupedTodos).map((date) => (
             <div key={date} className="p-4 bg-white shadow rounded-lg">
-              <h2 className="text-xl font-bold mb-4">{date}</h2>
+              <h2 className="text-xl font-bold mb-4 text-red-400">{"Remaining Task "+groupedTodos[date].pending.length}</h2>
               <div className="flex justify-between gap-10">
                 <TodoGroup title="Pending" todos={groupedTodos[date].pending} droppableId="pending" />
                 <TodoGroup title="In Progress" todos={groupedTodos[date]['in-progress']} droppableId="in-progress" />
@@ -115,4 +75,44 @@ const TodoList = () => {
   );
 };
 
+// Drag Todoitem 
+const TodoGroup = ({
+  title,
+  todos,
+  droppableId,
+}: {
+  title: string;
+  todos: Todo[];
+  droppableId: string;
+}) => (
+  <Droppable droppableId={droppableId}>
+    {(provided) => (
+      <div
+        className="w-1/3 px-2"
+        ref={provided.innerRef}
+        {...provided.droppableProps}
+      >
+        <h3 className="text-lg font-semibold mb-2 ">{title}</h3>
+        {todos.length > 0 ? (
+          todos.map((todo, index) => (
+            <Draggable key={todo.id} draggableId={todo.id} index={index}>
+              {(provided) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                >
+                  <TodoItem {...todo} />
+                </div>
+              )}
+            </Draggable>
+          ))
+        ) : (
+          <p className="text-gray-500 italic">No tasks in {title}</p>
+        )}
+        {provided.placeholder}
+      </div>
+    )}
+  </Droppable>
+);
 export default TodoList;
